@@ -20,7 +20,7 @@ fn handle_client(mut stream: TcpStream) {
         let status = "HTTP/1.1 200 OK\r\n\r\n";
         stream.write_all(status.as_bytes()).unwrap();
     } else {
-        let status = "HTTP/1.1 404 Not Found \r\n\r\n";
+        let status = "HTTP/1.1 404 Not Found\r\n\r\n";
         stream.write_all(status.as_bytes()).unwrap();
     }
 }
