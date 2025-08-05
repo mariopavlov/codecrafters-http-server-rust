@@ -1,11 +1,28 @@
+use std::io::{BufRead, BufReader};
 use std::net::TcpListener;
 use std::{io::Write, net::TcpStream};
 
 fn handle_client(mut stream: TcpStream) {
-    println!("accepted new connection");
-    let status = "HTTP/1.1 200 OK\r\n\r\n";
+    let buf_reader = BufReader::new(&mut stream);
+    let http_request: Vec<_> = buf_reader
+        .lines()
+        .map(|res| res.unwrap())
+        .take_while(|line| !line.is_empty())
+        .collect();
 
-    stream.write_all(status.as_bytes()).unwrap();
+    println!("[DEBUG] Request: {http_request:#?}");
+
+    let req_line = http_request.first().unwrap();
+
+    println!("accepted new connection");
+
+    if req_line == "GET / HTTP/1.1" {
+        let status = "HTTP/1.1 200 OK\r\n\r\n";
+        stream.write_all(status.as_bytes()).unwrap();
+    } else {
+        let status = "HTTP/1.1 404 Not Found \r\n\r\n";
+        stream.write_all(status.as_bytes()).unwrap();
+    }
 }
 
 fn main() {
