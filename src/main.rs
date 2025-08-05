@@ -16,13 +16,13 @@ fn handle_client(mut stream: TcpStream) {
 
     println!("accepted new connection");
 
-    if req_line == "GET / HTTP/1.1" {
-        let status = "HTTP/1.1 200 OK\r\n\r\n";
-        stream.write_all(status.as_bytes()).unwrap();
+    let status = if req_line == "GET / HTTP/1.1" {
+        "HTTP/1.1 200 OK\r\n\r\n"
     } else {
-        let status = "HTTP/1.1 404 Not Found\r\n\r\n";
-        stream.write_all(status.as_bytes()).unwrap();
-    }
+        "HTTP/1.1 404 Not Found\r\n\r\n"
+    };
+
+    stream.write_all(status.as_bytes()).unwrap();
 }
 
 fn main() {
